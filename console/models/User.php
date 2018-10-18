@@ -28,13 +28,13 @@ class User extends BaseUser
             echo 'New admin: ' . $email . ' created!' . "\n";
 
             $subject = 'Webill Admin';
-            $body = "Please use this password: " . $password . "to login at Webill as an Admin.\n
+            $body = "Please use this password: <b>" . $password . " </b> to login at Webill as an Admin.\n
             You may change it later after successfully logged in";
 
             EmailHelper::sendEmail($email, $subject , $body);
         } else {
 
-            echo 'Failed to create staff member: ' . $email . "\n";
+            echo 'Failed to create admin account: ' . $email . "\n";
             print_r($admin->getErrors());
         }
     }
