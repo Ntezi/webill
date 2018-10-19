@@ -23,7 +23,7 @@ class ConsumerController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    //'delete' => ['POST'],
                 ],
             ],
         ];
@@ -36,7 +36,7 @@ class ConsumerController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => User::find()->where(['role' => Yii::$app->params['consumer_role']]),
+            'query' => User::find()->where(['role' => Yii::$app->params['consumer_role'], 'status'=> User::STATUS_ACTIVE]),
         ]);
 
         return $this->render('index', [
@@ -113,7 +113,9 @@ class ConsumerController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->status = User::STATUS_DELETED;
+        $model->save();
 
         return $this->redirect(['index']);
     }

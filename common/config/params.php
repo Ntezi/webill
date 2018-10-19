@@ -5,6 +5,8 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'admin_role' => 0,
     'consumer_role' => 1,
+    'active_status' => 1,
+    'inactive_status' => 0,
     'admin_url' => 'http://54.92.61.139/webill/admin/',
     'client_url' => 'http://54.92.61.139/webill/admin/site/login',
 ];
