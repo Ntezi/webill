@@ -14,7 +14,10 @@ use yii\widgets\ActiveForm;
 
     <div class="row">
         <div class="col-md-4 col-lg-4">
-            <?= $form->field($model, 'address_id')->textInput() ?>
+            <?php echo $form->field($model, 'address_id')->dropDownList($addresses, [
+                'prompt' => Yii::t('app', 'Address'),
+            ]);
+            ?>
         </div>
         <div class="col-md-4 col-lg-4">
             <?= $form->field($model, 'serial_number')->textInput(['maxlength' => true]) ?>

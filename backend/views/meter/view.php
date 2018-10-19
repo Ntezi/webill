@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Meter */
 
-$this->title = $model->id;
+$this->title = $model->getAddressName();
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Meters'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

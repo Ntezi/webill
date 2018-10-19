@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Meter */
 
-$this->title = Yii::t('app', 'Update Meter: ' . $model->id, [
-    'nameAttribute' => '' . $model->id,
+$this->title = Yii::t('app', 'Update Meter: ' . $model->getAddressName(), [
+    'nameAttribute' => '' . $model->getAddressName(),
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Meters'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
     <?= $this->render('_form', [
         'model' => $model,
+        'addresses' => $addresses,
     ]) ?>
 
 </div>

@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use backend\models\Address;
 use Yii;
 use backend\models\Meter;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -36,7 +38,7 @@ class MeterController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Meter::find(),
+            'query' => Meter::find()->where(['status'=> Yii::$app->params['active_status']]),
         ]);
 
         return $this->render('index', [
@@ -65,6 +67,8 @@ class MeterController extends Controller
     public function actionCreate()
     {
         $model = new Meter();
+        $addresses = ArrayHelper::map(Address::find()->orderBy('building_name')->all(), 'id', 'building_name');
+
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -72,6 +76,7 @@ class MeterController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'addresses' => $addresses,
         ]);
     }
 
@@ -89,9 +94,10 @@ class MeterController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
+        $addresses = ArrayHelper::map(Address::find()->orderBy('building_name')->all(), 'id', 'building_name');
         return $this->render('update', [
             'model' => $model,
+            'addresses' => $addresses,
         ]);
     }
 
@@ -104,7 +110,9 @@ class MeterController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->status = Yii::$app->params['inactive_status'];
+        $model->save();
 
         return $this->redirect(['index']);
     }
