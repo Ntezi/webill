@@ -12,31 +12,39 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'zip_code')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'zip_code')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'prefecture')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'ward')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'town')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'district')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
-    <?= $form->field($model, 'prefecture')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'ward')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'town')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'district')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'street_number')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'building_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <?= $form->field($model, 'created_by')->textInput() ?>
-
-    <?= $form->field($model, 'updated_by')->textInput() ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
+    <div class="row">
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'street_number')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <?= $form->field($model, 'building_name')->textInput(['maxlength' => true]) ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

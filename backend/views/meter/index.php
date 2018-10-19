@@ -6,15 +6,15 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Addresses');
+$this->title = Yii::t('app', 'Meters');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="address-index">
+<div class="meter-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Add Address'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Add Meter'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -23,16 +23,14 @@ $this->params['breadcrumbs'][] = $this->title;
             //['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'zip_code',
-//            'prefecture',
-            'city',
-//            'ward',
-            'town',
-            //'district',
-            'street_number',
-            'building_name',
+            'address_id',
+            'serial_number',
+            'qr_code',
+            'latitude',
+            'longitude',
+            'reading',
             //'created_at',
-            //'updated_at',
+            //'update_at',
             //'created_by',
             //'updated_by',
             //'status',

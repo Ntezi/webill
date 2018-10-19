@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Address;
+use backend\models\Meter;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * AddressController implements the CRUD actions for Address model.
+ * MeterController implements the CRUD actions for Meter model.
  */
-class AddressController extends Controller
+class MeterController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -23,20 +23,20 @@ class AddressController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    //'delete' => ['POST'],
+                    'delete' => ['POST'],
                 ],
             ],
         ];
     }
 
     /**
-     * Lists all Address models.
+     * Lists all Meter models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Address::find()->where(['status'=> Yii::$app->params['active_status']]),
+            'query' => Meter::find(),
         ]);
 
         return $this->render('index', [
@@ -45,7 +45,7 @@ class AddressController extends Controller
     }
 
     /**
-     * Displays a single Address model.
+     * Displays a single Meter model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -58,13 +58,13 @@ class AddressController extends Controller
     }
 
     /**
-     * Creates a new Address model.
+     * Creates a new Meter model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Address();
+        $model = new Meter();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -76,7 +76,7 @@ class AddressController extends Controller
     }
 
     /**
-     * Updates an existing Address model.
+     * Updates an existing Meter model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -96,7 +96,7 @@ class AddressController extends Controller
     }
 
     /**
-     * Deletes an existing Address model.
+     * Deletes an existing Meter model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -104,24 +104,21 @@ class AddressController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        $model->status = Yii::$app->params['inactive_status'];
-        $model->save();
-
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Address model based on its primary key value.
+     * Finds the Meter model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Address the loaded model
+     * @return Meter the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Address::findOne($id)) !== null) {
+        if (($model = Meter::findOne($id)) !== null) {
             return $model;
         }
 

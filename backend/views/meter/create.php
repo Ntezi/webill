@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Address */
+/* @var $model backend\models\Meter */
 
-$this->title = Yii::t('app', 'Add Address');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Addresses'), 'url' => ['index']];
+$this->title = Yii::t('app', 'Add Meter');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Meters'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="address-create">
+<div class="meter-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

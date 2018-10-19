@@ -55,10 +55,13 @@ use yii\helpers\Url;
                     <a href="<?php echo Yii::$app->request->baseUrl; ?>/consumer/"><i class="fa fa-user fa-fw"></i>
                         <?php echo Yii::t('app', 'Consumers') ?></a>
                 </li>
-
                 <li class="<?php echo preg_match('/address/', $this->context->route, $matched) ? 'active' : '' ?>">
                     <a href="<?php echo Yii::$app->request->baseUrl; ?>/address/"><i class="fa fa-location-arrow fa-fw"></i>
                         <?php echo Yii::t('app', 'Addresses') ?></a>
+                </li>
+                <li class="<?php echo preg_match('/meter/', $this->context->route, $matched) ? 'active' : '' ?>">
+                    <a href="<?php echo Yii::$app->request->baseUrl; ?>/meter/"><i class="fa fa-clock-o fa-fw"></i>
+                        <?php echo Yii::t('app', 'Meters') ?></a>
                 </li>
             </ul>
         </div>

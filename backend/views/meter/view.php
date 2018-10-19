@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Address */
+/* @var $model backend\models\Meter */
 
-$this->title = $model->building_name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Addresses'), 'url' => ['index']];
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Meters'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="address-view">
+<div class="meter-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -29,16 +29,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'zip_code',
-            'prefecture',
-            'city',
-            'ward',
-            'town',
-            'district',
-            'street_number',
-            'building_name',
+            'address_id',
+            'serial_number',
+            'qr_code',
+            'latitude',
+            'longitude',
+            'reading',
             'created_at',
-            'updated_at',
+            'update_at',
             'created_by',
             'updated_by',
             'status',
