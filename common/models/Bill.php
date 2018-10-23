@@ -9,7 +9,6 @@ use Yii;
  *
  * @property int $id
  * @property int $user_id
- * @property int $meter_id
  * @property int $bill_info_id
  * @property double $previous_reading
  * @property double $current_reading
@@ -26,7 +25,6 @@ use Yii;
  * @property string $paid_flag
  *
  * @property User $user
- * @property Meter $meter
  * @property BillInfo $billInfo
  * @property Notification[] $notifications
  */
@@ -46,14 +44,13 @@ class Bill extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'meter_id', 'bill_info_id'], 'required'],
-            [['user_id', 'meter_id', 'bill_info_id', 'verified_by_user', 'verified_by_admin', 'created_by', 'updated_by'], 'integer'],
+            [['user_id'], 'required'],
+            [['user_id', 'bill_info_id', 'verified_by_user', 'verified_by_admin', 'created_by', 'updated_by'], 'integer'],
             [['previous_reading', 'current_reading', 'total_amount'], 'number'],
             [['created_at', 'updated_at', 'deadline'], 'safe'],
             [['paid_flag'], 'string'],
             [['image_path', 'bill_file_path'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['meter_id'], 'exist', 'skipOnError' => true, 'targetClass' => Meter::className(), 'targetAttribute' => ['meter_id' => 'id']],
             [['bill_info_id'], 'exist', 'skipOnError' => true, 'targetClass' => BillInfo::className(), 'targetAttribute' => ['bill_info_id' => 'id']],
         ];
     }
@@ -66,7 +63,6 @@ class Bill extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'user_id' => Yii::t('app', 'User ID'),
-            'meter_id' => Yii::t('app', 'Meter ID'),
             'bill_info_id' => Yii::t('app', 'Bill Info ID'),
             'previous_reading' => Yii::t('app', 'Previous Reading'),
             'current_reading' => Yii::t('app', 'Current Reading'),
@@ -90,14 +86,6 @@ class Bill extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMeter()
-    {
-        return $this->hasOne(Meter::className(), ['id' => 'meter_id']);
     }
 
     /**

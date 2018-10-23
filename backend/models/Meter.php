@@ -41,4 +41,10 @@ class Meter extends BaseMeter
         return Address::findOne(['id' => $this->address_id])->building_name;
     }
 
+    public static function getMeter($post)
+    {
+        $address = Address::getAddressByName($post);
+        return self::findOne(['address_id' => $address->id]);
+    }
+
 }

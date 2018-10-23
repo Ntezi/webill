@@ -10,9 +10,12 @@ namespace backend\models;
 
 use \common\models\Address as BaseAddress;
 use yii\behaviors\BlameableBehavior;
+use Yii;
 
 class Address extends BaseAddress
 {
+    public $address;
+
     public function rules()
     {
         return [
@@ -32,5 +35,26 @@ class Address extends BaseAddress
                 'updatedByAttribute' => 'updated_by',
             ],
         ];
+    }
+
+    public static function getAddressByName($post)
+    {
+        $address = explode(' # ', $post['address']);
+        Yii::warning($address);
+        $building_name = $address['0'];
+        $street_number = $address['1'];
+        $district = $address['2'];
+        $town = $address['3'];
+        $ward = $address['4'];
+        $city = $address['5'];
+
+        return self::find()
+            ->where(['building_name' => $building_name])
+            ->andWhere(['street_number' => $street_number])
+            ->andWhere(['district' => $district])
+            ->andWhere(['town' => $town])
+            ->andWhere(['ward' => $ward])
+            ->andWhere(['city' => $city])
+            ->one();
     }
 }

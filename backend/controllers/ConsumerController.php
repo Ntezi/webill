@@ -2,9 +2,13 @@
 
 namespace backend\controllers;
 
+use backend\models\Address;
+use backend\models\Meter;
+use backend\models\UserHasMeter;
 use Yii;
 use backend\models\User;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -66,6 +70,8 @@ class ConsumerController extends Controller
     {
         $model = new User();
 
+        $address_model = new Address();
+        $addresses = Address::find()->all();
         if ($model->load(Yii::$app->request->post())) {
 
             $model->username = $model->email;
@@ -81,6 +87,8 @@ class ConsumerController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'addresses' => $addresses,
+            'address_model' => $address_model,
         ]);
     }
 
@@ -95,12 +103,36 @@ class ConsumerController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $address_model = new Address();
+        $addresses = Address::find()->all();
+        if ($model->load(Yii::$app->request->post())) {
+
+            $transaction = $model->getDb()->beginTransaction();
+            try {
+                $post = Yii::$app->request->post('Address');
+                $model->save();
+                if(!empty($post)){
+                    $meter = Meter::getMeter($post);
+                    $user_has_meter = new UserHasMeter();
+                    $user_has_meter->user_id = $model->id;
+                    $user_has_meter->meter_id = $meter->id;
+                    $user_has_meter->save();
+                }
+                $transaction->commit();
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                throw $e;
+            } catch (\Throwable $e) {
+                $transaction->rollBack();
+                throw $e;
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'addresses' => $addresses,
+            'address_model' => $address_model,
         ]);
     }
 

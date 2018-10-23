@@ -22,6 +22,7 @@ use yii\behaviors\BlameableBehavior;
  * @property int $role 0:admin; 1:consumer
  * @property string $password
  * @property string $confirm_password
+ * @property int $meter_id
  */
 class User extends BaseUser
 {
@@ -29,6 +30,7 @@ class User extends BaseUser
 
     public $password;
     public $confirm_password;
+    public $meter_id;
 
     public function rules()
     {
@@ -39,7 +41,7 @@ class User extends BaseUser
             [['status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'role'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'first_name', 'last_name'], 'string', 'max' => 255],
 
-            //['password', 'required', 'on' => 'update'],
+            ['meter_id', 'required'],
             ['password', 'string', 'min' => 6],
             ['confirm_password', 'compare', 'compareAttribute'=>'password', 'skipOnEmpty' => false, 'message'=>Yii::t('app', "Passwords don't match")],
         ];

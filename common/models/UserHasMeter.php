@@ -32,7 +32,7 @@ class UserHasMeter extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'meter_id', 'status'], 'required'],
+            [['user_id', 'meter_id'], 'required'],
             [['user_id', 'meter_id', 'status'], 'integer'],
             [['started_at', 'ended_at'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
