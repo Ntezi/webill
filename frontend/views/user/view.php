@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\models\User */
 
-$this->title = $model->email;
+$this->title = $model->username;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">

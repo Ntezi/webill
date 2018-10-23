@@ -61,11 +61,6 @@ class User extends BaseUser
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE, 'role' => self::ROLE]);
     }
 
-    public static function findByUsername($username)
-    {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE, 'role' => self::ROLE]);
-    }
-
     public static function findByEmail($email)
     {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE, 'role' => self::ROLE]);
