@@ -30,7 +30,6 @@ class User extends BaseUser
 
     public $password;
     public $confirm_password;
-    public $meter_id;
 
     public function rules()
     {
@@ -40,8 +39,6 @@ class User extends BaseUser
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             [['status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'role'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'first_name', 'last_name'], 'string', 'max' => 255],
-
-            ['meter_id', 'required'],
             ['password', 'string', 'min' => 6],
             ['confirm_password', 'compare', 'compareAttribute'=>'password', 'skipOnEmpty' => false, 'message'=>Yii::t('app', "Passwords don't match")],
         ];
