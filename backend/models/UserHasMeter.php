@@ -9,20 +9,9 @@
 namespace backend\models;
 
 use \common\models\UserHasMeter as BaseUserHasMeter;
-use yii\behaviors\BlameableBehavior;
 
 class UserHasMeter extends BaseUserHasMeter
 {
-    public function behaviors()
-    {
-        return [
-            'blameable' => [
-                'class' => BlameableBehavior::className(),
-                'createdByAttribute' => 'started_at',
-                'updatedByAttribute' => 'ended_at',
-            ],
-        ];
-    }
 
     public function rules()
     {
@@ -32,6 +21,14 @@ class UserHasMeter extends BaseUserHasMeter
             [['started_at', 'ended_at'], 'safe'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['meter_id'], 'exist', 'skipOnError' => true, 'targetClass' => Meter::className(), 'targetAttribute' => ['meter_id' => 'id']],
+            //[['user_id', 'meter_id'], 'unique', 'targetClass' => self::className(), 'message' => 'This meter has already been taken.'],
+            [['user_id', 'meter_id'], 'unique', 'when' => function ($model) {
+                $current_date_time = date("Y-m-d H:i:s");
+                $ended_at = date("Y-m-d H:i:s", strtotime($model->ended_at));
+                return $ended_at < $current_date_time || $ended_at == null;
+            }, 'message' => 'This meter has already been taken.'],
         ];
     }
+
+
 }

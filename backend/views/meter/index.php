@@ -23,9 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
             //['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'address_id',
-            'serial_number',
-            'qr_code_file',
+//            'address_id',
+//            'serial_number',
+//            'qr_code_file',
             'latitude',
             'longitude',
             'reading',

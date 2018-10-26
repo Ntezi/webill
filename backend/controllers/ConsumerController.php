@@ -40,7 +40,7 @@ class ConsumerController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => User::find()->where(['role' => Yii::$app->params['consumer_role'], 'status'=> User::STATUS_ACTIVE]),
+            'query' => User::find()->where(['role' => Yii::$app->params['consumer_role'], 'status' => User::STATUS_ACTIVE]),
         ]);
 
         return $this->render('index', [
@@ -76,21 +76,31 @@ class ConsumerController extends Controller
 
             $transaction = $model->getDb()->beginTransaction();
             try {
-                $post = Yii::$app->request->post('Address');
-                $model->username = $model->email;
-                $password = Yii::$app->security->generateRandomString(6);
-                $model->setPassword($password);
-                $model->status = User::STATUS_ACTIVE;
-                $model->role = Yii::$app->params['consumer_role'];
+
                 $model->save();
-                $model->registeredMessage($model->email, $password, $model->role);
-                if(!empty($post)){
+                $post = Yii::$app->request->post('Address');
+
+                if (!empty($post['address'])) {
                     $meter = Meter::getMeter($post);
                     $user_has_meter = new UserHasMeter();
                     $user_has_meter->user_id = $model->id;
                     $user_has_meter->meter_id = $meter->id;
+                    $user_has_meter->started_at = date("Y-m-d H:i:s");
                     $user_has_meter->save();
+
+                    $error = $user_has_meter->getErrors();
+                    if (!empty($error)) {
+                        Yii::error(print_r($error, true));
+
+                        if (!empty($error ['meter_id'][0]) && $error ['meter_id'][0] == 'This meter has already been taken'){
+                            Yii::$app->getSession()->setFlash("warning", Yii::t('app', 'This meter has already been taken'));
+                            Yii::warning($error ['meter_id'][0]);
+                            Yii::warning(Yii::$app->session->getFlash("warning"));
+                        }
+
+                    }
                 }
+
                 $transaction->commit();
             } catch (\Exception $e) {
                 $transaction->rollBack();
@@ -99,7 +109,6 @@ class ConsumerController extends Controller
                 $transaction->rollBack();
                 throw $e;
             }
-
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -127,15 +136,25 @@ class ConsumerController extends Controller
 
             $transaction = $model->getDb()->beginTransaction();
             try {
-                $post = Yii::$app->request->post('Address');
+
                 $model->save();
-                if(!empty($post)){
+                $post = Yii::$app->request->post('Address');
+
+                if (!empty($post['address'])) {
                     $meter = Meter::getMeter($post);
                     $user_has_meter = new UserHasMeter();
                     $user_has_meter->user_id = $model->id;
                     $user_has_meter->meter_id = $meter->id;
+                    $user_has_meter->started_at = date("Y-m-d H:i:s");
                     $user_has_meter->save();
+
+                    $error = $user_has_meter->getErrors();
+                    if (!empty($error)) {
+                        Yii::error(print_r($error, true));
+                        Yii::warning($error ['meter_id'][0]);
+                    }
                 }
+
                 $transaction->commit();
             } catch (\Exception $e) {
                 $transaction->rollBack();

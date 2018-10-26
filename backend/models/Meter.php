@@ -12,7 +12,6 @@ use common\helpers\UploadHelper;
 use Yii;
 use \common\models\Meter as BaseMeter;
 use yii\behaviors\BlameableBehavior;
-use yii\helpers\FileHelper;
 
 /**
  * This is the model class for table "meter".

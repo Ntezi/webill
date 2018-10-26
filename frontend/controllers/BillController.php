@@ -1,21 +1,19 @@
 <?php
 
-namespace backend\controllers;
+namespace frontend\controllers;
 
-use backend\models\Address;
 use Yii;
-use backend\models\Meter;
+use frontend\models\Bill;
 use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
- * MeterController implements the CRUD actions for Meter model.
+ * BillController implements the CRUD actions for Bill model.
  */
-class MeterController extends Controller
+class BillController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -33,13 +31,13 @@ class MeterController extends Controller
     }
 
     /**
-     * Lists all Meter models.
+     * Lists all Bill models.
      * @return mixed
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Meter::find()->where(['status' => Yii::$app->params['active_status']]),
+            'query' => Bill::find(),
         ]);
 
         return $this->render('index', [
@@ -48,7 +46,7 @@ class MeterController extends Controller
     }
 
     /**
-     * Displays a single Meter model.
+     * Displays a single Bill model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -61,42 +59,34 @@ class MeterController extends Controller
     }
 
     /**
-     * Creates a new Meter model.
+     * Creates a new Bill model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Meter();
-        $model->scenario = 'create';
-
-        $addresses = ArrayHelper::map(Address::find()
-            ->orderBy('building_name')
-            ->all(), 'id', 'building_name');
-
+        $model = new Bill();
 
         if ($model->load(Yii::$app->request->post())) {
-            $uploaded_file = UploadedFile::getInstance($model, 'qr_code_image');
+            $uploaded_file = UploadedFile::getInstance($model, 'image');
 
-            if ($model->uploadQcode($uploaded_file)) {
+            if ($model->uploadImage($uploaded_file)) {
+
+                $model->user_id = Yii::$app->user->identity->id;
+                $model->user_id = Yii::$app->user->identity->id;
                 $model->save();
             } else {
-
             }
-
-            Yii::error(print_r($model->getErrors(), true));
             return $this->redirect(['view', 'id' => $model->id]);
-
         }
 
         return $this->render('create', [
             'model' => $model,
-            'addresses' => $addresses,
         ]);
     }
 
     /**
-     * Updates an existing Meter model.
+     * Updates an existing Bill model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -105,29 +95,18 @@ class MeterController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $addresses = ArrayHelper::map(Address::find()
-            ->orderBy('building_name')
-            ->all(), 'id', 'building_name');
 
-        if ($model->load(Yii::$app->request->post())) {
-            $uploaded_file = UploadedFile::getInstance($model, 'qr_code_image');
-
-            if ($model->uploadQcode($uploaded_file)) {
-                $model->save();
-            } else {
-            }
-
-            Yii::error(print_r($model->getErrors(), true));
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
+
         return $this->render('update', [
             'model' => $model,
-            'addresses' => $addresses,
         ]);
     }
 
     /**
-     * Deletes an existing Meter model.
+     * Deletes an existing Bill model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -135,23 +114,21 @@ class MeterController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        $model->status = Yii::$app->params['inactive_status'];
-        $model->save();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Meter model based on its primary key value.
+     * Finds the Bill model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Meter the loaded model
+     * @return Bill the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Meter::findOne($id)) !== null) {
+        if (($model = Bill::findOne($id)) !== null) {
             return $model;
         }
 

@@ -12,7 +12,7 @@ use Yii;
  * @property int $bill_info_id
  * @property double $previous_reading
  * @property double $current_reading
- * @property string $image_path
+ * @property string $image_file
  * @property string $bill_file_path
  * @property double $total_amount
  * @property int $verified_by_user 0:no; 1:yes
@@ -22,7 +22,7 @@ use Yii;
  * @property int $updated_by
  * @property string $updated_at
  * @property string $deadline
- * @property string $paid_flag
+ * @property int $paid_flag
  *
  * @property User $user
  * @property BillInfo $billInfo
@@ -44,12 +44,11 @@ class Bill extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'required'],
-            [['user_id', 'bill_info_id', 'verified_by_user', 'verified_by_admin', 'created_by', 'updated_by'], 'integer'],
+            [['user_id', 'image_file'], 'required'],
+            [['user_id', 'bill_info_id', 'verified_by_user', 'verified_by_admin', 'created_by', 'updated_by', 'paid_flag'], 'integer'],
             [['previous_reading', 'current_reading', 'total_amount'], 'number'],
             [['created_at', 'updated_at', 'deadline'], 'safe'],
-            [['paid_flag'], 'string'],
-            [['image_path', 'bill_file_path'], 'string', 'max' => 255],
+            [['image_file', 'bill_file_path'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['bill_info_id'], 'exist', 'skipOnError' => true, 'targetClass' => BillInfo::className(), 'targetAttribute' => ['bill_info_id' => 'id']],
         ];
@@ -66,7 +65,7 @@ class Bill extends \yii\db\ActiveRecord
             'bill_info_id' => Yii::t('app', 'Bill Info ID'),
             'previous_reading' => Yii::t('app', 'Previous Reading'),
             'current_reading' => Yii::t('app', 'Current Reading'),
-            'image_path' => Yii::t('app', 'Image Path'),
+            'image_file' => Yii::t('app', 'Image File'),
             'bill_file_path' => Yii::t('app', 'Bill File Path'),
             'total_amount' => Yii::t('app', 'Total Amount'),
             'verified_by_user' => Yii::t('app', 'Verified By User'),

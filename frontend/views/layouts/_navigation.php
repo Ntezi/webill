@@ -50,6 +50,12 @@ use yii\helpers\Url;
                     <a href="<?php echo Yii::$app->request->baseUrl; ?>/"><i class="fa fa-dashboard fa-fw"></i>
                         <?php echo Yii::t('app', 'Dashboard') ?></a>
                 </li>
+
+
+                <li class="<?php echo preg_match('/bill/', $this->context->route, $matched) ? 'active' : '' ?>">
+                    <a href="<?php echo Yii::$app->request->baseUrl; ?>/bill"><i class="fa fa-money fa-fw"></i>
+                        <?php echo Yii::t('app', 'Bills') ?></a>
+                </li>
             </ul>
         </div>
         <!-- /.sidebar-collapse -->
