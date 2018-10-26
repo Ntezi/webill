@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'address_id',
             'serial_number',
-            'qr_code',
+            'qr_code_file',
             'latitude',
             'longitude',
             'reading',

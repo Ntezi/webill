@@ -10,6 +10,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * MeterController implements the CRUD actions for Meter model.
@@ -38,7 +39,7 @@ class MeterController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Meter::find()->where(['status'=> Yii::$app->params['active_status']]),
+            'query' => Meter::find()->where(['status' => Yii::$app->params['active_status']]),
         ]);
 
         return $this->render('index', [
@@ -67,11 +68,35 @@ class MeterController extends Controller
     public function actionCreate()
     {
         $model = new Meter();
-        $addresses = ArrayHelper::map(Address::find()->orderBy('building_name')->all(), 'id', 'building_name');
+        $model->scenario = 'create';
+
+        $addresses = ArrayHelper::map(Address::find()
+            ->orderBy('building_name')
+            ->all(), 'id', 'building_name');
 
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->qr_code_image = UploadedFile::getInstance($model, 'qr_code_image');
+            $transaction = $model->getDb()->beginTransaction();
+            try {
+                $model->save();
+                if ($model->upload()) {
+
+                    $transaction->commit();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                } else {
+                    Yii::error(print_r($model->getErrors(), true));
+                    Yii::$app->getSession()->setFlash("fail", Yii::t('app', 'Image is not uploaded.'));
+                    $transaction->rollBack();
+                }
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                throw $e;
+            } catch (\Throwable $e) {
+                $transaction->rollBack();
+                throw $e;
+            }
+
         }
 
         return $this->render('create', [
@@ -90,11 +115,22 @@ class MeterController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $addresses = ArrayHelper::map(Address::find()
+            ->orderBy('building_name')
+            ->all(), 'id', 'building_name');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $uploaded_file = UploadedFile::getInstance($model, 'qr_code_image');
+
+            if ($model->uploadQcode($uploaded_file)) {
+                $model->save();
+            } else {
+                return false;
+            }
+
+            Yii::error(print_r($model->getErrors(), true));
             return $this->redirect(['view', 'id' => $model->id]);
         }
-        $addresses = ArrayHelper::map(Address::find()->orderBy('building_name')->all(), 'id', 'building_name');
         return $this->render('update', [
             'model' => $model,
             'addresses' => $addresses,

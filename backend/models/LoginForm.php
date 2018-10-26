@@ -23,6 +23,7 @@ class LoginForm extends BaseLoginForm
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
+            ['email', 'email'],
             ['password', 'validatePassword'],
         ];
     }

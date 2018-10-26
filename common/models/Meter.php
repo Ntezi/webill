@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property int $address_id
  * @property string $serial_number
- * @property string $qr_code
+ * @property string $qr_code_file
  * @property double $latitude
  * @property double $longitude
  * @property double $reading
@@ -20,7 +20,6 @@ use Yii;
  * @property int $updated_by
  * @property int $status 0:inactive; 1:active
  *
- * @property Bill[] $bills
  * @property Address $address
  * @property UserHasMeter[] $userHasMeters
  */
@@ -40,11 +39,11 @@ class Meter extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['address_id', 'qr_code'], 'required'],
+            [['address_id', 'qr_code_file', 'latitude', 'longitude'], 'required'],
             [['address_id', 'created_by', 'updated_by', 'status'], 'integer'],
             [['latitude', 'longitude', 'reading'], 'number'],
             [['created_at', 'update_at'], 'safe'],
-            [['serial_number', 'qr_code'], 'string', 'max' => 255],
+            [['serial_number', 'qr_code_file'], 'string', 'max' => 255],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::className(), 'targetAttribute' => ['address_id' => 'id']],
         ];
     }
@@ -58,7 +57,7 @@ class Meter extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'address_id' => Yii::t('app', 'Address ID'),
             'serial_number' => Yii::t('app', 'Serial Number'),
-            'qr_code' => Yii::t('app', 'Qr Code'),
+            'qr_code_file' => Yii::t('app', 'Qr Code File'),
             'latitude' => Yii::t('app', 'Latitude'),
             'longitude' => Yii::t('app', 'Longitude'),
             'reading' => Yii::t('app', 'Reading'),
@@ -68,14 +67,6 @@ class Meter extends \yii\db\ActiveRecord
             'updated_by' => Yii::t('app', 'Updated By'),
             'status' => Yii::t('app', 'Status'),
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBills()
-    {
-        return $this->hasMany(Bill::className(), ['meter_id' => 'id']);
     }
 
     /**

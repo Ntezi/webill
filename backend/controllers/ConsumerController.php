@@ -74,13 +74,31 @@ class ConsumerController extends Controller
         $addresses = Address::find()->all();
         if ($model->load(Yii::$app->request->post())) {
 
-            $model->username = $model->email;
-            $password = Yii::$app->security->generateRandomString(6);
-            $model->setPassword($password);
-            $model->status = User::STATUS_ACTIVE;
-            $model->role = Yii::$app->params['consumer_role'];
-            $model->save();
-            $model->registeredMessage($model->email, $password, $model->role);
+            $transaction = $model->getDb()->beginTransaction();
+            try {
+                $post = Yii::$app->request->post('Address');
+                $model->username = $model->email;
+                $password = Yii::$app->security->generateRandomString(6);
+                $model->setPassword($password);
+                $model->status = User::STATUS_ACTIVE;
+                $model->role = Yii::$app->params['consumer_role'];
+                $model->save();
+                $model->registeredMessage($model->email, $password, $model->role);
+                if(!empty($post)){
+                    $meter = Meter::getMeter($post);
+                    $user_has_meter = new UserHasMeter();
+                    $user_has_meter->user_id = $model->id;
+                    $user_has_meter->meter_id = $meter->id;
+                    $user_has_meter->save();
+                }
+                $transaction->commit();
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                throw $e;
+            } catch (\Throwable $e) {
+                $transaction->rollBack();
+                throw $e;
+            }
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

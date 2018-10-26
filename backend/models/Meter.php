@@ -8,11 +8,21 @@
 
 namespace backend\models;
 
+use common\helpers\UploadHelper;
+use Yii;
 use \common\models\Meter as BaseMeter;
 use yii\behaviors\BlameableBehavior;
+use yii\helpers\FileHelper;
 
+/**
+ * This is the model class for table "meter".
+ *
+ * @property string $qr_code_image
+ */
 class Meter extends BaseMeter
 {
+    public $qr_code_image;
+
     public function behaviors()
     {
         return [
@@ -27,12 +37,16 @@ class Meter extends BaseMeter
     public function rules()
     {
         return [
-            [['address_id', 'qr_code', 'latitude', 'longitude', 'reading'], 'required'],
+            [['address_id', 'reading'], 'required'],
             [['address_id', 'created_by', 'updated_by', 'status'], 'integer'],
             [['latitude', 'longitude', 'reading'], 'number'],
             [['created_at', 'update_at'], 'safe'],
-            [['serial_number', 'qr_code'], 'string', 'max' => 255],
+            [['serial_number', 'qr_code_file'], 'string', 'max' => 255],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::className(), 'targetAttribute' => ['address_id' => 'id']],
+
+            [['qr_code_image'], 'required', 'on' => 'create'],
+            [['qr_code_image'], 'safe'],
+            [['qr_code_image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg', 'gif'], 'maxSize' => 1024 * 1024],
         ];
     }
 
@@ -47,4 +61,23 @@ class Meter extends BaseMeter
         return self::findOne(['address_id' => $address->id]);
     }
 
+    public function beforeValidate()
+    {
+        $this->qr_code_image = preg_replace('/\s+/', '', $this->qr_code_image);
+
+        return parent::beforeValidate();
+    }
+
+    public function uploadQcode($uploaded_file)
+    {
+        $file_name = rand() . rand() . date("Ymdhis") . '.' . $uploaded_file->extension;
+        $path = Yii::getAlias('@backend') . '/web/uploads/meters/';
+        $file_dir = $path . $this->id . '/';
+
+        if (UploadHelper::upload($uploaded_file, $this, 'qr_code_file', $file_name, $file_dir)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
