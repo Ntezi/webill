@@ -43,7 +43,7 @@ class Meter extends BaseMeter
             [['serial_number', 'qr_code_file'], 'string', 'max' => 255],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::className(), 'targetAttribute' => ['address_id' => 'id']],
 
-            [['qr_code_image'], 'required', 'on' => 'create'],
+//            [['qr_code_image'], 'required', 'on' => 'create'],
             [['qr_code_image'], 'safe'],
             [['qr_code_image'], 'file', 'skipOnEmpty' => true, 'extensions' => ['png', 'jpg', 'jpeg', 'gif'], 'maxSize' => 1024 * 1024],
         ];
@@ -58,6 +58,13 @@ class Meter extends BaseMeter
     {
         $address = Address::getAddressByName($post);
         return self::findOne(['address_id' => $address->id]);
+    }
+
+    public static function getCurrentMeter($user_id)
+    {
+        $user_has_meter = UserHasMeter::findOne(['user_id' => $user_id, 'ended_at' => null]);
+        if (!empty($user_has_meter))
+            return self::findOne(['id' => $user_has_meter->meter_id]);
     }
 
     public function beforeValidate()

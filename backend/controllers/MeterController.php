@@ -3,34 +3,19 @@
 namespace backend\controllers;
 
 use backend\models\Address;
+use common\components\SuperController;
 use Yii;
 use backend\models\Meter;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
  * MeterController implements the CRUD actions for Meter model.
  */
-class MeterController extends Controller
+class MeterController extends SuperController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * Lists all Meter models.
@@ -68,7 +53,7 @@ class MeterController extends Controller
     public function actionCreate()
     {
         $model = new Meter();
-        $model->scenario = 'create';
+//        $model->scenario = 'create';
 
         $addresses = ArrayHelper::map(Address::find()
             ->orderBy('building_name')
@@ -79,14 +64,11 @@ class MeterController extends Controller
             $uploaded_file = UploadedFile::getInstance($model, 'qr_code_image');
 
             if ($model->uploadQcode($uploaded_file)) {
-                $model->save();
-            } else {
-
+                if ($model->save()){
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
-
             Yii::error(print_r($model->getErrors(), true));
-            return $this->redirect(['view', 'id' => $model->id]);
-
         }
 
         return $this->render('create', [
@@ -113,12 +95,11 @@ class MeterController extends Controller
             $uploaded_file = UploadedFile::getInstance($model, 'qr_code_image');
 
             if ($model->uploadQcode($uploaded_file)) {
-                $model->save();
-            } else {
+                if ($model->save()){
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
-
             Yii::error(print_r($model->getErrors(), true));
-            return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('update', [
             'model' => $model,

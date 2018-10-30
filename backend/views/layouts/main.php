@@ -27,6 +27,7 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div id="wrapper">
+    <?php if (!Yii::$app->user->isGuest): ?>
     <!-- Navigation -->
     <?php echo $this->render('_navigation') ?>
 
@@ -35,7 +36,7 @@ AppAsset::register($this);
         <?= $content ?>
     </div>
     <!-- /#page-wrapper -->
-
+    <?php endif ?>
 </div>
 
 <?php $this->endBody() ?>

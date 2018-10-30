@@ -20,6 +20,16 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
         'model' => $model,
         'addresses' => $addresses,
         'address_model' => $address_model,
+        'address' => $address,
     ]) ?>
+    <?php if (!empty($address)) : ?>
+    <?php echo Html::a(Yii::t('app', 'Remove Meter'), ['remove', 'id' => $model->id], [
+        'class' => 'btn btn-info',
+        'data' => [
+            'confirm' => Yii::t('app', 'Are you sure you want to remove the meter?'),
+            'method' => 'post',
+        ],
+    ]) ?>
+    <?php endif; ?>
 
 </div>

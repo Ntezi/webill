@@ -29,21 +29,34 @@ use kartik\typeahead\Typeahead;
     <div class="row">
 
         <div class="col-md-12 col-lg-12">
-            <?php $addresses_ = array();
-            foreach ($addresses as $address):
-                $address_ = $address->building_name . " # " .
-                    $address->street_number . " # " .
-                    $address->district . " # " .
-                    $address->town . " # " .
-                    $address->ward . " # " .
-                    $address->city;
-                array_push($addresses_, $address_);
-            endforeach;
-            echo $form->field($address_model, 'address')->widget(Typeahead::classname(), [
-                'options' => ['placeholder' => 'Search address'],
-                'pluginOptions' => ['highlight' => true,],
-                'dataset' => [['local' => $addresses_, 'limit' => 10],]
-            ])?>
+            <?php if (!$model->isNewRecord && !empty($address)) : ?>
+
+                <div class="alert alert-info">
+                    <strong>Address:</strong>
+                    <?php echo $address->building_name . " - " .
+                        $address->street_number . " - " .
+                        $address->district . " - " .
+                        $address->town . " - " .
+                        $address->ward . " - " .
+                        $address->city; ?>
+                </div>
+
+            <?php endif; ?>
+            <?php if (empty($address)) : $addresses_ = array();
+                foreach ($addresses as $address):
+                    $address_ = $address->building_name . " # " .
+                        $address->street_number . " # " .
+                        $address->district . " # " .
+                        $address->town . " # " .
+                        $address->ward . " # " .
+                        $address->city;
+                    array_push($addresses_, $address_);
+                endforeach;
+                echo $form->field($address_model, 'address')->widget(Typeahead::classname(), [
+                    'options' => ['placeholder' => 'Search address'],
+                    'pluginOptions' => ['highlight' => true,],
+                    'dataset' => [['local' => $addresses_, 'limit' => 10],]
+                ]); endif; ?>
         </div>
     </div>
 

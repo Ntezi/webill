@@ -12,6 +12,7 @@ use Yii;
  * @property string $started_at
  * @property string $ended_at
  * @property int $status 0:inactive;1:active
+ * @property int $id
  *
  * @property User $user
  * @property Meter $meter
@@ -51,6 +52,7 @@ class UserHasMeter extends \yii\db\ActiveRecord
             'started_at' => Yii::t('app', 'Started At'),
             'ended_at' => Yii::t('app', 'Ended At'),
             'status' => Yii::t('app', 'Status'),
+            'id' => Yii::t('app', 'ID'),
         ];
     }
 

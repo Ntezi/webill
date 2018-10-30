@@ -15,6 +15,7 @@ use yii\behaviors\BlameableBehavior;
 /**
  * User model
  *
+ * @property string $email
  * @property string $first_name
  * @property string $last_name
  * @property int $created_by
@@ -34,13 +35,14 @@ class User extends BaseUser
     public function rules()
     {
         return [
+            ['email', 'required', 'message'=>Yii::t('app', "Email is required")],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['role', 'default', 'value' => self::ROLE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             [['status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'role'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'first_name', 'last_name'], 'string', 'max' => 255],
             ['password', 'string', 'min' => 6],
-            ['confirm_password', 'compare', 'compareAttribute'=>'password', 'skipOnEmpty' => false, 'message'=>Yii::t('app', "Passwords don't match")],
+            ['confirm_password', 'compare', 'compareAttribute'=>'password', 'skipOnEmpty' => false, 'message' => Yii::t('app', "Passwords don't match")],
         ];
     }
 
@@ -96,5 +98,12 @@ class User extends BaseUser
         $body .="You may change it later after successfully logged in";
 
         EmailHelper::sendEmail($email, $subject , $body);
+    }
+
+    public function getCurrentAddress()
+    {
+        $meter = Meter::getCurrentMeter($this->id);
+        if (!empty($meter))
+            return Address::findOne(['id' => $meter->address_id]);
     }
 }

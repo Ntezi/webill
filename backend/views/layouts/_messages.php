@@ -9,10 +9,18 @@
 ?>
 
 
-<?php if (Yii::$app->session->getFlash("warning")): Yii::warning(Yii::$app->session->getFlash("warning")); ?>
+<?php if (Yii::$app->session->getFlash("warning")): ?>
     <div class="alert alert-warning">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         <strong>Warning!</strong>
         <?php echo Yii::$app->session->getFlash("warning"); ?>
+    </div>
+<?php endif; ?>
+
+<?php if (Yii::$app->session->getFlash("success")): ?>
+    <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>Warning!</strong>
+        <?php echo Yii::$app->session->getFlash("success"); ?>
     </div>
 <?php endif; ?>

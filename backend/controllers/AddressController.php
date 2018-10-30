@@ -2,33 +2,17 @@
 
 namespace backend\controllers;
 
+use common\components\SuperController;
 use Yii;
 use backend\models\Address;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * AddressController implements the CRUD actions for Address model.
  */
-class AddressController extends Controller
+class AddressController extends SuperController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    //'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Address models.
      * @return mixed

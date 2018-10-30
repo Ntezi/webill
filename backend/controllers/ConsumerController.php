@@ -5,34 +5,17 @@ namespace backend\controllers;
 use backend\models\Address;
 use backend\models\Meter;
 use backend\models\UserHasMeter;
+use common\components\SuperController;
 use Yii;
 use backend\models\User;
 use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ConsumerController implements the CRUD actions for User model.
  */
-class ConsumerController extends Controller
+class ConsumerController extends SuperController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    //'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all User models.
      * @return mixed
@@ -56,8 +39,11 @@ class ConsumerController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $address = $model->getCurrentAddress();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'address' => $address,
         ]);
     }
 
@@ -77,31 +63,37 @@ class ConsumerController extends Controller
             $transaction = $model->getDb()->beginTransaction();
             try {
 
-                $model->save();
-                $post = Yii::$app->request->post('Address');
+                if ($model->save()){
+                    $post = Yii::$app->request->post('Address');
 
-                if (!empty($post['address'])) {
-                    $meter = Meter::getMeter($post);
-                    $user_has_meter = new UserHasMeter();
-                    $user_has_meter->user_id = $model->id;
-                    $user_has_meter->meter_id = $meter->id;
-                    $user_has_meter->started_at = date("Y-m-d H:i:s");
-                    $user_has_meter->save();
+                    if (!empty($post['address'])) {
+                        $meter = Meter::getMeter($post);
+                        $user_has_meter = new UserHasMeter();
+                        $user_has_meter->user_id = $model->id;
+                        $user_has_meter->meter_id = $meter->id;
+                        $user_has_meter->started_at = date("Y-m-d H:i:s");
+                        $user_has_meter->save();
 
-                    $error = $user_has_meter->getErrors();
-                    if (!empty($error)) {
-                        Yii::error(print_r($error, true));
+                        $error = $user_has_meter->getErrors();
+                        if (!empty($error)) {
+                            Yii::error(print_r($error, true));
 
-                        if (!empty($error ['meter_id'][0]) && $error ['meter_id'][0] == 'This meter has already been taken'){
-                            Yii::$app->getSession()->setFlash("warning", Yii::t('app', 'This meter has already been taken'));
-                            Yii::warning($error ['meter_id'][0]);
-                            Yii::warning(Yii::$app->session->getFlash("warning"));
+                            if (!empty($error ['meter_id'][0]) && $error ['meter_id'][0] == 'This meter has already been taken') {
+
+
+                                Yii::warning($error ['meter_id'][0]);
+                                Yii::$app->session->addFlash("warning", Yii::t('app', 'This meter has already been taken'));
+                                Yii::warning(Yii::$app->session->getFlash("warning"));
+                            }
+
                         }
+                    } else {
 
                     }
+                    $transaction->commit();
+                    return $this->redirect(['view', 'id' => $model->id]);
                 }
 
-                $transaction->commit();
             } catch (\Exception $e) {
                 $transaction->rollBack();
                 throw $e;
@@ -109,7 +101,6 @@ class ConsumerController extends Controller
                 $transaction->rollBack();
                 throw $e;
             }
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -128,34 +119,50 @@ class ConsumerController extends Controller
      */
     public function actionUpdate($id)
     {
+        $session = Yii::$app->session;
         $model = $this->findModel($id);
+        $address = $model->getCurrentAddress();
 
         $address_model = new Address();
         $addresses = Address::find()->all();
+
         if ($model->load(Yii::$app->request->post())) {
 
             $transaction = $model->getDb()->beginTransaction();
             try {
 
-                $model->save();
-                $post = Yii::$app->request->post('Address');
+                if ($model->save()){
+                    $post = Yii::$app->request->post('Address');
 
-                if (!empty($post['address'])) {
-                    $meter = Meter::getMeter($post);
-                    $user_has_meter = new UserHasMeter();
-                    $user_has_meter->user_id = $model->id;
-                    $user_has_meter->meter_id = $meter->id;
-                    $user_has_meter->started_at = date("Y-m-d H:i:s");
-                    $user_has_meter->save();
+                    if (!empty($post['address'])) {
+                        $meter = Meter::getMeter($post);
+                        $user_has_meter = new UserHasMeter();
+                        $user_has_meter->user_id = $model->id;
+                        $user_has_meter->meter_id = $meter->id;
+                        $user_has_meter->started_at = date("Y-m-d H:i:s");
+                        $user_has_meter->save();
 
-                    $error = $user_has_meter->getErrors();
-                    if (!empty($error)) {
-                        Yii::error(print_r($error, true));
-                        Yii::warning($error ['meter_id'][0]);
+                        $error = $user_has_meter->getErrors();
+                        if (!empty($error)) {
+                            Yii::error(print_r($error, true));
+
+                            if (!empty($error ['meter_id'][0]) && $error ['meter_id'][0] == 'This meter has already been taken') {
+
+
+//                                Yii::warning($error ['meter_id'][0]);
+                                Yii::$app->session->setFlash("warning", Yii::t('app', 'This meter has already been taken'));
+//                                Yii::warning(Yii::$app->session->getFlash("warning"));
+                            }
+
+                        }
+                    } else {
+
                     }
-                }
 
-                $transaction->commit();
+                    $transaction->commit();
+                    Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully updated '));
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             } catch (\Exception $e) {
                 $transaction->rollBack();
                 throw $e;
@@ -163,13 +170,13 @@ class ConsumerController extends Controller
                 $transaction->rollBack();
                 throw $e;
             }
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
             'model' => $model,
             'addresses' => $addresses,
             'address_model' => $address_model,
+            'address' => $address,
         ]);
     }
 
@@ -203,5 +210,16 @@ class ConsumerController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    public function actionRemove($id)
+    {
+        $model = $this->findModel($id);
+        $user_has_meter = UserHasMeter::findOne(['user_id' => $model->id, 'ended_at' => null]);
+        $user_has_meter->status = Yii::$app->params['inactive_status'];
+        $user_has_meter->ended_at = date("Y-m-d H:i:s");
+        $user_has_meter->save();
+
+        return $this->redirect(['view', 'id' => $model->id]);
     }
 }

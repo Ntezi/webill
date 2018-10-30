@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\components\SuperController;
 use Yii;
 use backend\models\User;
 use yii\data\ActiveDataProvider;
@@ -12,7 +13,7 @@ use yii\filters\VerbFilter;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends Controller
+class UserController extends SuperController
 {
     /**
      * {@inheritdoc}
