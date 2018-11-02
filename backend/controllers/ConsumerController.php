@@ -40,7 +40,7 @@ class ConsumerController extends SuperController
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $address = $model->getCurrentAddress();
+        $address = $model->getConsumerCurrentAddress();
         return $this->render('view', [
             'model' => $model,
             'address' => $address,
@@ -119,9 +119,8 @@ class ConsumerController extends SuperController
      */
     public function actionUpdate($id)
     {
-        $session = Yii::$app->session;
         $model = $this->findModel($id);
-        $address = $model->getCurrentAddress();
+        $address = $model->getConsumerCurrentAddress($model->id);
 
         $address_model = new Address();
         $addresses = Address::find()->all();
@@ -147,13 +146,8 @@ class ConsumerController extends SuperController
                             Yii::error(print_r($error, true));
 
                             if (!empty($error ['meter_id'][0]) && $error ['meter_id'][0] == 'This meter has already been taken') {
-
-
-//                                Yii::warning($error ['meter_id'][0]);
                                 Yii::$app->session->setFlash("warning", Yii::t('app', 'This meter has already been taken'));
-//                                Yii::warning(Yii::$app->session->getFlash("warning"));
                             }
-
                         }
                     } else {
 

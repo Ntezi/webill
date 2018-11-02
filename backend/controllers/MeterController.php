@@ -63,7 +63,7 @@ class MeterController extends SuperController
         if ($model->load(Yii::$app->request->post())) {
             $uploaded_file = UploadedFile::getInstance($model, 'qr_code_image');
 
-            if ($model->uploadQcode($uploaded_file)) {
+            if ($model->uploadQRCode($uploaded_file)) {
                 if ($model->save()){
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
@@ -94,7 +94,7 @@ class MeterController extends SuperController
         if ($model->load(Yii::$app->request->post())) {
             $uploaded_file = UploadedFile::getInstance($model, 'qr_code_image');
 
-            if ($model->uploadQcode($uploaded_file)) {
+            if ($model->uploadQRCode($uploaded_file)) {
                 if ($model->save()){
                     return $this->redirect(['view', 'id' => $model->id]);
                 }

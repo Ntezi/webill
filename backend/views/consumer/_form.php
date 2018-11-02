@@ -32,7 +32,7 @@ use kartik\typeahead\Typeahead;
             <?php if (!$model->isNewRecord && !empty($address)) : ?>
 
                 <div class="alert alert-info">
-                    <strong>Address:</strong>
+                    <strong>Meter Address:</strong>
                     <?php echo $address->building_name . " - " .
                         $address->street_number . " - " .
                         $address->district . " - " .

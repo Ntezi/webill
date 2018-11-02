@@ -20,7 +20,7 @@
 <?php if (Yii::$app->session->getFlash("success")): ?>
     <div class="alert alert-success">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <strong>Warning!</strong>
+        <strong>Success!</strong>
         <?php echo Yii::$app->session->getFlash("success"); ?>
     </div>
 <?php endif; ?>

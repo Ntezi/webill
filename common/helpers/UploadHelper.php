@@ -21,7 +21,7 @@ class UploadHelper
 
             FileHelper::createDirectory($file_dir);
 
-            if ($uploaded_file && $model->validate()) {
+            if ($uploaded_file ) { //&& $model->validate()
                 if ($uploaded_file->saveAs($file_path)) {
                     $model->$file_attribute = $file_name;
                     return true;

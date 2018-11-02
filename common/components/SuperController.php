@@ -25,6 +25,7 @@ class SuperController extends Controller
                     'view',
                     'delete',
                     'remove',
+                    'submit',
                 ],
                 'rules' => [
                     [
@@ -35,6 +36,7 @@ class SuperController extends Controller
                             'view',
                             'delete',
                             'remove',
+                            'submit',
                         ],
                         'allow' => true,
                         'roles' => ['@'],
@@ -44,9 +46,10 @@ class SuperController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['post'],
-                    'logout' => ['post'],
+                    'delete' => ['POST'],
+                    'logout' => ['POST'],
                     'remove' => ['POST'],
+                    'submit' => ['POST'],
                 ],
             ],
         ];

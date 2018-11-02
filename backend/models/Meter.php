@@ -60,13 +60,6 @@ class Meter extends BaseMeter
         return self::findOne(['address_id' => $address->id]);
     }
 
-    public static function getCurrentMeter($user_id)
-    {
-        $user_has_meter = UserHasMeter::findOne(['user_id' => $user_id, 'ended_at' => null]);
-        if (!empty($user_has_meter))
-            return self::findOne(['id' => $user_has_meter->meter_id]);
-    }
-
     public function beforeValidate()
     {
         $this->qr_code_image = preg_replace('/\s+/', '', $this->qr_code_image);
@@ -74,7 +67,7 @@ class Meter extends BaseMeter
         return parent::beforeValidate();
     }
 
-    public function uploadQcode($uploaded_file)
+    public function uploadQRCode($uploaded_file)
     {
         $file_name = rand() . rand() . date("Ymdhis") . '.' . $uploaded_file->extension;
         $path = Yii::getAlias('@backend') . '/web/uploads/meters/';

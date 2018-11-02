@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\components\SuperController;
+use frontend\models\User;
 use Yii;
 use frontend\models\Bill;
 use yii\data\ActiveDataProvider;
@@ -13,23 +15,8 @@ use yii\web\UploadedFile;
 /**
  * BillController implements the CRUD actions for Bill model.
  */
-class BillController extends Controller
+class BillController extends SuperController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Bill models.
      * @return mixed
@@ -37,7 +24,8 @@ class BillController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Bill::find(),
+            'query' => Bill::find()
+//                ->where(['paid_flag' => null]),
         ]);
 
         return $this->render('index', [
@@ -66,18 +54,24 @@ class BillController extends Controller
     public function actionCreate()
     {
         $model = new Bill();
+        $meter = User::getConsumerCurrentMeter(Yii::$app->user->identity->id);
 
         if ($model->load(Yii::$app->request->post())) {
             $uploaded_file = UploadedFile::getInstance($model, 'image');
 
-            if ($model->uploadImage($uploaded_file)) {
+            Yii::warning('Before upload');
 
+            if ($model->uploadImage($uploaded_file)) {
                 $model->user_id = Yii::$app->user->identity->id;
-                $model->user_id = Yii::$app->user->identity->id;
-                $model->save();
-            } else {
+                $model->previous_reading = $meter->reading;
+                $model->verified_by_user = Yii::$app->params['verified_no'];
+                $model->verified_by_admin = Yii::$app->params['verified_no'];
+                $model->paid_flag = null;
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                Yii::error(print_r($model->getErrors(), true));
             }
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -133,5 +127,15 @@ class BillController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    public function actionSubmit($id)
+    {
+        $model = $this->findModel($id);
+        $model->verified_by_user = Yii::$app->params['verified_yes'];
+        $model->paid_flag = Yii::$app->params['pending_bill_flag'];
+        $model->save();
+
+        return $this->redirect(['index']);
     }
 }

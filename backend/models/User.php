@@ -100,10 +100,20 @@ class User extends BaseUser
         EmailHelper::sendEmail($email, $subject , $body);
     }
 
-    public function getCurrentAddress()
+    public function getConsumerCurrentAddress($user_id)
     {
-        $meter = Meter::getCurrentMeter($this->id);
+        $meter = self::getConsumerCurrentMeter($user_id);
         if (!empty($meter))
             return Address::findOne(['id' => $meter->address_id]);
+    }
+
+    public static function getConsumerCurrentMeter($user_id)
+    {
+        $user_has_meter = UserHasMeter::findOne(['user_id' => $user_id, 'ended_at' => null]);
+        if (!empty($user_has_meter))
+            $meter = Meter::findOne(['id' => $user_has_meter->meter_id]);
+
+            if (!empty($meter))
+                return $meter;
     }
 }

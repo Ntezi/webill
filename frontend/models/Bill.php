@@ -17,6 +17,7 @@ use yii\behaviors\BlameableBehavior;
 class Bill extends BaseBill
 {
     public $image;
+
     public function behaviors()
     {
         return [
@@ -31,7 +32,7 @@ class Bill extends BaseBill
     public function rules()
     {
         return [
-            [['user_id', 'image'], 'required'],
+            [['user_id'], 'required'],
             [['user_id', 'bill_info_id', 'verified_by_user', 'verified_by_admin', 'created_by', 'updated_by', 'paid_flag'], 'integer'],
             [['previous_reading', 'current_reading', 'total_amount'], 'number'],
             [['created_at', 'updated_at', 'deadline'], 'safe'],
@@ -54,13 +55,29 @@ class Bill extends BaseBill
     public function uploadImage($uploaded_file)
     {
         $file_name = rand() . rand() . date("Ymdhis") . '.' . $uploaded_file->extension;
+
+        Yii::warning('file name: ' . $file_name);
         $path = Yii::getAlias('@frontend') . '/web/uploads/bills/';
         $file_dir = $path . Yii::$app->user->identity->id . '/' . $this->id . '/';
 
+        Yii::warning('file dir: ' . $file_name);
         if (UploadHelper::upload($uploaded_file, $this, 'image_file', $file_name, $file_dir)) {
+            Yii::warning('After: ' . $file_name);
             return true;
         } else {
+            Yii::warning('fail: ' . $file_name);
             return false;
         }
+    }
+
+    //Billing Formula
+    //[consumption *unit_price + tax] - discount where
+    //consumption = current_reading-previous_reading
+    public function calculateBill()
+    {
+        $bill_info = BillInfo::findOne(1);
+        $consumption = $this->current_reading - $this->previous_reading;
+        return ($consumption * $bill_info->unit_price + $bill_info->unit_price + 0.08) - $bill_info->discount;
+
     }
 }
