@@ -21,8 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-                <?= $form->field($model, 'username')
-                    ->textInput(['autofocus' => true, 'placeholder' => Yii::t('app', 'Enter username')])->label(false); ?>
+                <?= $form->field($model, 'email')
+                    ->textInput(['autofocus' => true, 'placeholder' => Yii::t('app', 'Enter email')])->label(false); ?>
 
                 <?= $form->field($model, 'password')
                     ->passwordInput(['placeholder' => Yii::t('app', 'Enter password')])->label(false); ?>

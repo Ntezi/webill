@@ -15,4 +15,5 @@ return [
     'verified_no' => 0,
     'admin_url' => 'http://54.92.61.139/webill/admin/',
     'client_url' => 'http://54.92.61.139/webill/admin/site/login',
+    'root' => 'http://localhost/webill/admin',
 ];

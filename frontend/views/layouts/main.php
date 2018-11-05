@@ -27,13 +27,17 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div id="wrapper">
-    <!-- Navigation -->
-    <?php echo $this->render('_navigation') ?>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <!-- Navigation -->
+        <?php echo (Yii::$app->user->identity->role == Yii::$app->params['admin_role']) ?
+        $this->render('@backend/views/layouts/_navigation') : $this->render('_navigation'); ?>
 
-    <div id="page-wrapper">
-        <?= $content ?>
-    </div>
-    <!-- /#page-wrapper -->
+        <div id="page-wrapper">
+            <?php echo $this->render('@backend/views/layouts/_messages') ?>
+            <?= $content ?>
+        </div>
+        <!-- /#page-wrapper -->
+    <?php endif ?>
 
 </div>
 

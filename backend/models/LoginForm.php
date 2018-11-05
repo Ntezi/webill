@@ -8,6 +8,7 @@
 
 namespace backend\models;
 
+use Yii;
 use common\models\LoginForm as BaseLoginForm;
 
 class LoginForm extends BaseLoginForm
@@ -31,7 +32,7 @@ class LoginForm extends BaseLoginForm
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findByEmail($this->email);
+             $this->_user = User::findByEmail($this->email);
         }
 
         return $this->_user;
