@@ -84,4 +84,10 @@ class Bill extends BaseBill
         return $label;
     }
 
+    public function getImagePath()
+    {
+        $image = $this->user_id . '/' . $this->id . '/' . $this->image_file;
+        return Yii::getAlias('@frontend') . '/web/uploads/bills/' . $image;
+    }
+
 }

@@ -20,6 +20,13 @@ $this->title = Yii::$app->name;
             'columns' => [
                 'id',
                 [
+                    'label' => 'QR Code',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        return Html::img($model->getImagePath());
+                    },
+                ],
+                [
                     'label' => 'Consumer',
                     'format' => 'raw',
                     'value' => function ($model) {

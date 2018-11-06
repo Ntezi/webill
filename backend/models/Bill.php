@@ -17,9 +17,8 @@ class Bill extends BaseBill
 
     public function readBillQRCode()
     {
-        $path = Yii::getAlias('@frontend') . '/web/uploads/bills/' . $this->user_id . '/' . $this->id . '/' . $this->image_file;
-        Yii::warning('bills path: ' . $path);
-        return QRCodeHelper::ReadQRCode($path);
+        Yii::warning('bills path: ' . $this->getImagePath());
+        return QRCodeHelper::ReadQRCode($this->getImagePath());
     }
 
     //Billing Formula
