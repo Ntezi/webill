@@ -8,6 +8,7 @@
 
 namespace backend\models;
 
+use Yii;
 use common\models\LoginForm as BaseLoginForm;
 
 class LoginForm extends BaseLoginForm
@@ -25,15 +26,27 @@ class LoginForm extends BaseLoginForm
             // password is validated by validatePassword()
             ['email', 'email'],
             ['password', 'validatePassword'],
+            [['email', 'password'], 'validateAdmin'],
         ];
     }
 
     protected function getUser()
     {
         if ($this->_user === null) {
+
             $this->_user = User::findByEmail($this->email);
         }
 
         return $this->_user;
+    }
+
+    public function validateAdmin($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+            if ($user && $user->role != 0) {
+                $this->addError($attribute, 'You are not allowed to access the admin site!');
+            }
+        }
     }
 }

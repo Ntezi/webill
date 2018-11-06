@@ -58,7 +58,7 @@ class Bill extends BaseBill
 
         Yii::warning('file name: ' . $file_name);
         $path = Yii::getAlias('@frontend') . '/web/uploads/bills/';
-        $file_dir = $path . Yii::$app->user->identity->id . '/' . $this->id . '/';
+        $file_dir = $path . Yii::$app->user->identity->id . '/';
 
         Yii::warning('file dir: ' . $file_name);
         if (UploadHelper::upload($uploaded_file, $this, 'image_file', $file_name, $file_dir)) {

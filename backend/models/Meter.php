@@ -8,6 +8,7 @@
 
 namespace backend\models;
 
+use common\helpers\QRCodeHelper;
 use common\helpers\UploadHelper;
 use Yii;
 use \common\models\Meter as BaseMeter;
@@ -78,5 +79,13 @@ class Meter extends BaseMeter
         } else {
             return false;
         }
+    }
+
+    public static function readMeterQRCode($meter)
+    {
+        Yii::warning('qr_code_image : ' . $meter->id);
+        $path = Yii::getAlias('@backend') . '/web/uploads/meters/' . $meter->id. '/'. $meter->qr_code_image;
+        Yii::warning('meters path: ' . $path);
+        return QRCodeHelper::ReadQRCode($path);
     }
 }

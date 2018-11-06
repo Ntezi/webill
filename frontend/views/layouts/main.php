@@ -27,13 +27,16 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div id="wrapper">
-    <!-- Navigation -->
-    <?php echo $this->render('_navigation') ?>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <!-- Navigation -->
+        <?php echo $this->render('_navigation') ?>
 
-    <div id="page-wrapper">
-        <?= $content ?>
-    </div>
-    <!-- /#page-wrapper -->
+        <div id="page-wrapper">
+            <?php echo $this->render('_messages') ?>
+            <?= $content ?>
+        </div>
+        <!-- /#page-wrapper -->
+    <?php endif ?>
 
 </div>
 

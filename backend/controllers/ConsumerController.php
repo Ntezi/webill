@@ -40,7 +40,7 @@ class ConsumerController extends SuperController
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $address = $model->getConsumerCurrentAddress();
+        $address = $model->getConsumerCurrentAddress($id);
         return $this->render('view', [
             'model' => $model,
             'address' => $address,

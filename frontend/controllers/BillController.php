@@ -54,23 +54,30 @@ class BillController extends SuperController
     public function actionCreate()
     {
         $model = new Bill();
-        $meter = User::getConsumerCurrentMeter(Yii::$app->user->identity->id);
 
         if ($model->load(Yii::$app->request->post())) {
             $uploaded_file = UploadedFile::getInstance($model, 'image');
 
             Yii::warning('Before upload');
-
-            if ($model->uploadImage($uploaded_file)) {
-                $model->user_id = Yii::$app->user->identity->id;
-                $model->previous_reading = $meter->reading;
-                $model->verified_by_user = Yii::$app->params['verified_no'];
-                $model->verified_by_admin = Yii::$app->params['verified_no'];
-                $model->paid_flag = null;
-                if ($model->save()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
+            $meter = User::getConsumerCurrentMeter(Yii::$app->user->identity->id);
+            if (!empty($meter)) {
+                if ($model->uploadImage($uploaded_file)) {
+                    $model->user_id = Yii::$app->user->identity->id;
+                    $model->previous_reading = $meter->reading;
+                    $model->verified_by_user = Yii::$app->params['verified_no'];
+                    $model->verified_by_admin = Yii::$app->params['verified_no'];
+                    $model->paid_flag = null;
+                    if ($model->save()) {
+                        Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully uploaded'));
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                    Yii::error(print_r($model->getErrors(), true));
                 }
-                Yii::error(print_r($model->getErrors(), true));
+                else {
+                    Yii::$app->session->setFlash("warning", Yii::t('app', 'Problem occurred while uploading'));
+                }
+            } else {
+                Yii::$app->session->setFlash("warning", Yii::t('app', 'No meter assigned to you!'));
             }
         }
 
