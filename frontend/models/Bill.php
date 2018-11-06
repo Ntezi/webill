@@ -58,7 +58,7 @@ class Bill extends BaseBill
 
         Yii::warning('file name: ' . $file_name);
         $path = Yii::getAlias('@frontend') . '/web/uploads/bills/';
-        $file_dir = $path . Yii::$app->user->identity->id . '/';
+        $file_dir = $path . Yii::$app->user->identity->id . '/' . $this->id . '/';
 
         Yii::warning('file dir: ' . $file_name);
         if (UploadHelper::upload($uploaded_file, $this, 'image_file', $file_name, $file_dir)) {
@@ -70,14 +70,18 @@ class Bill extends BaseBill
         }
     }
 
-    //Billing Formula
-    //[consumption *unit_price + tax] - discount where
-    //consumption = current_reading-previous_reading
-    public function calculateBill()
+    public function getFlagLabel()
     {
-        $bill_info = BillInfo::findOne(1);
-        $consumption = $this->current_reading - $this->previous_reading;
-        return ($consumption * $bill_info->unit_price + $bill_info->unit_price + 0.08) - $bill_info->discount;
+        $label = Yii::t('app', 'Not set');
+        if ($this->paid_flag == Yii::$app->params['not_paid_bill_flag']) {
+            $label = Yii::t('app', 'Not paid');
+        } elseif ($this->paid_flag == Yii::$app->params['paid_bill_flag']) {
+            $label = Yii::t('app', 'Paid');
+        } elseif ($this->paid_flag == Yii::$app->params['pending_bill_flag']) {
+            $label = Yii::t('app', 'Pending');
+        }
 
+        return $label;
     }
+
 }

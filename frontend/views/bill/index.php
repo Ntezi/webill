@@ -35,17 +35,18 @@ $this->params['breadcrumbs'][] = $this->title;
             //'updated_by',
             //'updated_at',
             'deadline',
-            'paid_flag',
+            [
+                'label' => 'Payment Status',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    return $model->getFlagLabel();
+                },
+            ],
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update} {delete} {submit}',
+                'template' => '{update} {delete} {submit}',
                 'buttons' => [
-
-                    'view' => function ($url, $model) {
-                        return Html::a(Html::tag('i', Yii::t('app', ' View'), ['class' => 'fa fa-eye']), $url,
-                            ['class' => 'btn btn-success btn-xs']);
-                    },
                     'update' => function ($url, $model) {
                         if ($model->verified_by_user == Yii::$app->params['verified_no'])
                             return Html::a(Html::tag('i', Yii::t('app', ' Update'), ['class' => 'fa fa-edit']), $url,
@@ -63,8 +64,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'submit' => function ($url, $model) {
                         if ($model->verified_by_user == Yii::$app->params['verified_no'])
-                            return Html::a(Html::tag('i', Yii::t('app', ' Confirm'), ['class' => 'fa fa-trash']), $url, [
-                                'class' => 'btn btn-default btn-xs',
+                            return Html::a(Html::tag('i', Yii::t('app', ' Submit'), ['class' => 'fa fa-thumbs-up']), $url, [
+                                'class' => 'btn btn-success btn-xs',
                                 'data' => [
                                     'confirm' => Yii::t('app', '\'Are you sure you want to submit this information?'),
                                     'method' => 'post',

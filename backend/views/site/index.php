@@ -19,21 +19,33 @@ $this->title = Yii::$app->name;
             'dataProvider' => $dataProvider,
             'columns' => [
                 'id',
-//            'user_id',
+                [
+                    'label' => 'Consumer',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        return Html::a($model->getConsumerEmail(), ['consumer/view', 'id' => $model->user_id]);
+                    },
+                ],
 //            'bill_info_id',
-//            'previous_reading',
+                'previous_reading',
                 'current_reading',
                 //'image_path',
                 //'bill_file_path',
                 'total_amount',
 //            'verified_by_user',
 //            'verified_by_admin',
-                'created_at',
+//                'created_at',
                 //'created_by',
                 //'updated_by',
                 //'updated_at',
                 'deadline',
-                'paid_flag',
+                [
+                    'label' => 'Payment Status',
+                    'format' => 'raw',
+                    'value' => function ($model) {
+                        return $model->getFlagLabel();
+                    },
+                ],
 
                 [
                     'class' => 'yii\grid\ActionColumn',
@@ -41,9 +53,9 @@ $this->title = Yii::$app->name;
                     'buttons' => [
 
                         'check' => function ($url, $model) {
-                            //if ($model->verified_by_user == Yii::$app->params['verified_no'])
-                            return Html::a(Html::tag('i', Yii::t('app', ' Check'), ['class' => 'fa fa-edit']), ['bill/index', 'id' => $model->id],
-                                ['class' => 'btn btn-primary btn-xs']);
+                            if ($model->verified_by_admin != Yii::$app->params['verified_yes'])
+                                return Html::a(Html::tag('i', Yii::t('app', ' Check'), ['class' => 'fa fa-edit']), ['bill/index', 'id' => $model->id],
+                                    ['class' => 'btn btn-primary btn-xs']);
                         },
                         'approve' => function ($url, $model) {
                             //if ($model->verified_by_user == Yii::$app->params['verified_no'])
@@ -56,14 +68,14 @@ $this->title = Yii::$app->name;
                             ]);
                         },
                         'reject' => function ($url, $model) {
-                            //if ($model->verified_by_user == Yii::$app->params['verified_no'])
-                            return Html::a(Html::tag('i', Yii::t('app', ' Reject'), ['class' => 'fa fa-trash']), $url, [
-                                'class' => 'btn btn-danger btn-xs',
-                                'data' => [
-                                    'confirm' => Yii::t('app', '\'Are you sure you want to delete this item?'),
-                                    'method' => 'post',
-                                ],
-                            ]);
+                            if ($model->verified_by_admin != Yii::$app->params['verified_yes'])
+                                return Html::a(Html::tag('i', Yii::t('app', ' Reject'), ['class' => 'fa fa-trash']), $url, [
+                                    'class' => 'btn btn-danger btn-xs',
+                                    'data' => [
+                                        'confirm' => Yii::t('app', '\'Are you sure you want to delete this item?'),
+                                        'method' => 'post',
+                                    ],
+                                ]);
                         },
 
                     ],],

@@ -64,7 +64,8 @@ class SiteController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Bill::find()
-//                ->where(['paid_flag' => null]),
+                ->where(['verified_by_user' => Yii::$app->params['verified_yes']])
+                ->orWhere(['paid_flag' => Yii::$app->params['pending_bill_flag']]),
         ]);
 
         return $this->render('index', [

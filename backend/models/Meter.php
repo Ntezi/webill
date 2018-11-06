@@ -81,10 +81,10 @@ class Meter extends BaseMeter
         }
     }
 
-    public static function readMeterQRCode($meter)
+    public function readMeterQRCode()
     {
-        Yii::warning('qr_code_image : ' . $meter->id);
-        $path = Yii::getAlias('@backend') . '/web/uploads/meters/' . $meter->id. '/'. $meter->qr_code_image;
+        Yii::warning('qr_code_image : ' . $this->id);
+        $path = Yii::getAlias('@backend') . '/web/uploads/meters/' . $this->id . '/' . $this->qr_code_file;
         Yii::warning('meters path: ' . $path);
         return QRCodeHelper::ReadQRCode($path);
     }
