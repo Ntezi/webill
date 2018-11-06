@@ -17,7 +17,14 @@ use yii\helpers\Url;
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="<?php echo Yii::$app->request->baseUrl; ?>/"><?php echo Yii::$app->name ?></a>
+        <a class="navbar-brand" href="<?php echo Yii::$app->request->baseUrl; ?>/">
+
+            <?php //echo Yii::$app->name ?>
+            <?php if (Yii::$app->user->identity->role == Yii::$app->params['admin_role']): ?>
+                WeBill Admin
+            <?php endif; ?>
+        </a>
+
     </div>
     <!-- /.navbar-header -->
 

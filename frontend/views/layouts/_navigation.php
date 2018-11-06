@@ -54,7 +54,7 @@ use yii\helpers\Url;
 
                 <li class="<?php echo preg_match('/bill/', $this->context->route, $matched) ? 'active' : '' ?>">
                     <a href="<?php echo Yii::$app->request->baseUrl; ?>/bill"><i class="fa fa-money fa-fw"></i>
-                        <?php echo Yii::t('app', 'Bills') ?></a>
+                        <?php echo Yii::t('app', 'Upload') ?></a>
                 </li>
             </ul>
         </div>

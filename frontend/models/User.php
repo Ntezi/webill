@@ -36,4 +36,9 @@ class User extends BaseUser
             'role' => self::ROLE,
         ]);
     }
+
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE, 'role' => self::ROLE]);
+    }
 }
