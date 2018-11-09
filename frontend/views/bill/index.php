@@ -21,6 +21,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'columns' => [
             'id',
+            [
+                'label' => 'QR Code',
+                'format'=>'html',
+                'value' => function ($model) {
+
+                    return Html::img($model->getImagePath(), ['width' => '60px']);
+                },
+            ],
 //            'user_id',
 //            'bill_info_id',
 //            'previous_reading',

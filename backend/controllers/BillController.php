@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Bill;
 use backend\models\Meter;
 use backend\models\User;
+use common\helpers\UploadHelper;
 use Yii;
 use common\components\SuperController;
 use yii\web\NotFoundHttpException;
@@ -23,31 +24,39 @@ class BillController extends SuperController
                 Yii::$app->session->setFlash("success", Yii::t('app', $bill_qr));
             }
 
+            //Get image info
 
-            $meter = User::getConsumerCurrentMeter($bill->user_id);
-            if (!empty($meter)) {
+//            UploadHelper::getImageInfo($bill->getImagePath());
 
-                $bill_qr = $bill->readBillQRCode();
-                $meter_qr = $meter->readMeterQRCode();
+            //Read image with OCR
+            UploadHelper::getReadImage($bill->getImageAbsolutePath());
 
-                if ($meter_qr != null && $bill_qr != null) {
-                    if ($meter_qr == $bill_qr) {
-
-                        $bill->previous_reading = $meter->reading;
-                        $bill->verified_by_admin = Yii::$app->params['verified_yes'];
-                        $bill->total_amount = $bill->calculateBill();
-                        $bill->paid_flag = Yii::$app->params['pending_bill_flag'];
-                        $bill->deadline = date('Y-m-di', strtotime('+1 month'));
-                        $bill->save();
-
-                        // Update the meter
-
-                        Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully Matched '));
-                    } else {
-                        Yii::$app->session->setFlash("warning", Yii::t('app', 'Not Matched '));
-                    }
-                }
-            }
+//            $meter = User::getConsumerCurrentMeter($bill->user_id);
+//            if (!empty($meter)) {
+//
+//                $bill_qr = $bill->readBillQRCode();
+//                $meter_qr = $meter->readMeterQRCode();
+//
+//                if ($meter_qr != null && $bill_qr != null) {
+//                    if ($meter_qr == $bill_qr) {
+//
+//                        $bill->previous_reading = $meter->reading;
+////                        $bill->verified_by_admin = Yii::$app->params['verified_yes'];
+//                        $bill->total_amount = $bill->calculateBill();
+//                        $bill->paid_flag = Yii::$app->params['pending_bill_flag'];
+//                        $bill->deadline = date('Y-m-di', strtotime('+1 month'));
+//                        $bill->save();
+//
+//
+//
+//                        // Update the meter
+//
+//                        Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully Matched '));
+//                    } else {
+//                        Yii::$app->session->setFlash("warning", Yii::t('app', 'Not Matched '));
+//                    }
+//                }
+//            }
 
             return $this->redirect(['site/index']);
         }

@@ -7,9 +7,7 @@ use frontend\models\User;
 use Yii;
 use frontend\models\Bill;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
@@ -25,7 +23,7 @@ class BillController extends SuperController
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Bill::find()
-//                ->where(['paid_flag' => null]),
+                ->where(['user_id' => Yii::$app->user->identity->getId()]),
         ]);
 
         return $this->render('index', [

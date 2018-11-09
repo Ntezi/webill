@@ -48,6 +48,12 @@ return [
             'rules' => [
             ],
         ],
+        'urlManagerFrontend' => [
+            'class' => 'yii\web\urlManager',
+            'baseUrl' => Yii::$app->params['frontend'],
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
 
     ],
     'params' => $params,

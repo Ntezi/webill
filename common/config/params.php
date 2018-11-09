@@ -16,4 +16,6 @@ return [
     'admin_url' => 'http://54.92.61.139/webill/admin/',
     'client_url' => 'http://54.92.61.139/webill/admin/site/login',
     'root' => 'http://localhost/webill/admin',
+    'frontend_uploads' => 'http://localhost/webill/frontend/web/uploads/',
+    'backend_uploads' => 'http://localhost/webill/backend/web/uploads/',
 ];

@@ -21,9 +21,10 @@ $this->title = Yii::$app->name;
                 'id',
                 [
                     'label' => 'QR Code',
-                    'format' => 'raw',
+                    'format'=>'html',
                     'value' => function ($model) {
-                        return Html::img($model->getImagePath());
+
+                        return Html::img($model->getImagePath(), ['width' => '60px']);
                     },
                 ],
                 [

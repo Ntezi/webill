@@ -83,7 +83,7 @@ class Meter extends BaseMeter
 
     public function readMeterQRCode()
     {
-        Yii::warning('qr_code_image : ' . $this->id);
+        Yii::warning('qr_code_image : ' . $this->qr_code_file);
         $path = Yii::getAlias('@backend') . '/web/uploads/meters/' . $this->id . '/' . $this->qr_code_file;
         Yii::warning('meters path: ' . $path);
         return QRCodeHelper::ReadQRCode($path);
