@@ -4,8 +4,7 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Bill */
-
-$this->title = Yii::t('app', 'Update Bill: ' . $model->id, [
+$this->title = Yii::t('app', 'Update Bill No. ' . $model->id, [
     'nameAttribute' => '' . $model->id,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bills'), 'url' => ['index']];

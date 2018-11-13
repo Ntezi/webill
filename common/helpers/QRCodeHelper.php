@@ -7,7 +7,8 @@
  */
 
 namespace common\helpers;
-
+ini_set('memory_limit','2G');
+ini_set('max_execution_time','180');
 use Yii;
 use Zxing\QrReader;
 

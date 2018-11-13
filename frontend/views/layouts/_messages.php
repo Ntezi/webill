@@ -24,3 +24,11 @@
         <?php echo Yii::$app->session->getFlash("success"); ?>
     </div>
 <?php endif; ?>
+
+<?php if (Yii::$app->session->getFlash("danger")): ?>
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>Error!</strong>
+        <?php echo Yii::$app->session->getFlash("danger"); ?>
+    </div>
+<?php endif; ?>

@@ -9,6 +9,7 @@
 namespace frontend\models;
 
 use backend\models\BillInfo;
+use common\helpers\QRCodeHelper;
 use Yii;
 use common\helpers\UploadHelper;
 use common\models\Bill as BaseBill;
@@ -34,7 +35,7 @@ class Bill extends BaseBill
         return [
             [['user_id'], 'required'],
             [['user_id', 'bill_info_id', 'verified_by_user', 'verified_by_admin', 'created_by', 'updated_by', 'paid_flag'], 'integer'],
-            [['previous_reading', 'current_reading', 'total_amount'], 'number'],
+            [['previous_reading', 'total_amount'], 'number'],
             [['created_at', 'updated_at', 'deadline'], 'safe'],
             [['image_file', 'bill_file_path'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -96,4 +97,37 @@ class Bill extends BaseBill
         return Yii::getAlias('@frontend') . '/web/uploads/bills/' . $image;
     }
 
+    public function readBillQRCode()
+    {
+        Yii::warning('bills path: ' . $this->getImagePath());
+        return QRCodeHelper::ReadQRCode($this->getImagePath());
+    }
+
+    public function getMeterCurrentReading()
+    {
+        Yii::warning('getImageAbsolutePath: ' . $this->getImageAbsolutePath());
+        return UploadHelper::getReadImage($this->getImageAbsolutePath());
+    }
+
+    public function saveMeterReading()
+    {
+        //Read image with OCR
+        $current_reading = $this->getMeterCurrentReading();
+        if ($current_reading != null) {
+            $this->current_reading = $current_reading;
+            $this->save();
+        }
+    }
+
+    public function checkCurrentReading($current_reading)
+    {
+        if ($current_reading != null) {
+            $this->current_reading = (int)$current_reading;
+            if ($this->current_reading > $this->previous_reading) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 }

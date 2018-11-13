@@ -39,7 +39,11 @@ class BillController extends SuperController
      */
     public function actionView($id)
     {
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+//        return $this->redirect(['index']);
+        return $this->render('view', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -66,19 +70,34 @@ class BillController extends SuperController
                     $model->paid_flag = null;
                     if ($model->save()) {
                         $uploaded_file = UploadedFile::getInstance($model, 'image');
-                        if ($model->uploadImage($uploaded_file)) {
-                            Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully uploaded'));
-                            $transaction->commit();
-                            return $this->redirect(['index']);
+                        if ($uploaded_file) {
+                            if ($model->uploadImage($uploaded_file)) {
+
+                                $model->saveMeterReading();
+                                $transaction->commit();
+                                Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully uploaded'));
+                                return $this->redirect(['update', 'id' => $model->id]);
+                            } else {
+                                $transaction->rollBack();
+                                Yii::$app->session->setFlash("warning", Yii::t('app', 'Problem occurred while uploading'));
+                            }
                         } else {
+                            Yii::$app->session->setFlash("danger", Yii::t('app', 'Image file can not be empty'));
                             $transaction->rollBack();
-                            Yii::$app->session->setFlash("warning", Yii::t('app', 'Problem occurred while uploading'));
+                            return $this->redirect(['create']);
                         }
+
+                    } else {
+                        $transaction->rollBack();
+                        Yii::$app->session->setFlash("warning", Yii::t('app', 'There is a problem while uploading. Please contact the admin'));
+                        Yii::error(print_r($model->getErrors(), true));
+                        return $this->redirect(['create']);
                     }
-                    Yii::error(print_r($model->getErrors(), true));
+
                 } else {
                     $transaction->rollBack();
-                    Yii::$app->session->setFlash("warning", Yii::t('app', 'No meter assigned to you!'));
+                    Yii::$app->session->setFlash("danger", Yii::t('app', 'No meter assigned to you!'));
+                    return $this->redirect(['create']);
                 }
 
             } catch (\Exception $e) {
@@ -105,8 +124,8 @@ class BillController extends SuperController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post())) {
+        $post = Yii::$app->request->post();
+        if ($model->load($post)) {
             $transaction = $model->getDb()->beginTransaction();
             try {
 
@@ -118,18 +137,30 @@ class BillController extends SuperController
                     $model->verified_by_user = Yii::$app->params['verified_no'];
                     $model->verified_by_admin = Yii::$app->params['verified_no'];
                     $model->paid_flag = null;
-                    if ($model->save()) {
+                    $current_reading = $post['Bill']['current_reading'];
+                    Yii::warning('$current_reading: ' . print_r($current_reading, true));
+                    if (!$model->checkCurrentReading($current_reading)) {
+                        Yii::warning('current_reading: ' . $model->current_reading);
+                        Yii::$app->session->setFlash("danger", Yii::t('app', 'The previous reading is greater than the current reading!'));
+                    } elseif ($model->save()) {
                         $uploaded_file = UploadedFile::getInstance($model, 'image');
-                        if ($model->uploadImage($uploaded_file)) {
-                            Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully uploaded'));
-                            $transaction->commit();
-                            return $this->redirect(['index']);
-                        } else {
-                            $transaction->rollBack();
-                            Yii::$app->session->setFlash("warning", Yii::t('app', 'Problem occurred while uploading'));
+                        if ($uploaded_file) {
+                            if ($model->uploadImage($uploaded_file)) {
+                                Yii::$app->session->setFlash("success", Yii::t('app', 'Successfully uploaded'));
+                                $model->saveMeterReading();
+                            } else {
+                                $transaction->rollBack();
+                                Yii::$app->session->setFlash("warning", Yii::t('app', 'Problem occurred while uploading'));
+                            }
                         }
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    } else {
+                        $transaction->rollBack();
+                        Yii::$app->session->setFlash("danger", Yii::t('app', 'There is a problem while uploading. Please contact the admin'));
+                        Yii::error(print_r($model->getErrors(), true));
+                        return $this->redirect(['update']);
                     }
-                    Yii::error(print_r($model->getErrors(), true));
                 } else {
                     $transaction->rollBack();
                     Yii::$app->session->setFlash("warning", Yii::t('app', 'No meter assigned to you!'));

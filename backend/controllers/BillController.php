@@ -18,18 +18,21 @@ class BillController extends SuperController
 
         if (!empty($bill)) {
 
+            //Read QR Code
             $bill_qr = $bill->readBillQRCode();
 
+            //Read image with OCR
+            $current_reading = $bill->getMeterCurrentReading();
+
             if ($bill_qr != null) {
-                Yii::$app->session->setFlash("success", Yii::t('app', $bill_qr));
+                Yii::$app->session->setFlash("success", Yii::t('app', 'QR Code: ' . $current_reading));
             }
 
-            //Get image info
 
-//            UploadHelper::getImageInfo($bill->getImagePath());
 
-            //Read image with OCR
-            UploadHelper::getReadImage($bill->getImageAbsolutePath());
+            //Get image metadata
+            UploadHelper::getImageInfo($bill->getImagePath());
+
 
 //            $meter = User::getConsumerCurrentMeter($bill->user_id);
 //            if (!empty($meter)) {

@@ -9,18 +9,12 @@
 namespace backend\models;
 
 use common\helpers\QRCodeHelper;
+use common\helpers\UploadHelper;
 use Yii;
 use frontend\models\Bill as BaseBill;
 
 class Bill extends BaseBill
 {
-
-    public function readBillQRCode()
-    {
-        Yii::warning('bills path: ' . $this->getImagePath());
-        return QRCodeHelper::ReadQRCode($this->getImagePath());
-    }
-
     //Billing Formula
     //[consumption *unit_price + tax] - discount where
     //consumption = current_reading-previous_reading

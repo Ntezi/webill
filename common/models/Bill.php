@@ -11,16 +11,16 @@ use Yii;
  * @property int $user_id
  * @property int $bill_info_id
  * @property double $previous_reading
- * @property double $current_reading
+ * @property string $current_reading
  * @property string $image_file
  * @property string $bill_file_path
  * @property double $total_amount
  * @property int $verified_by_user 0:no; 1:yes
  * @property int $verified_by_admin 0:no; 1:yes
  * @property string $created_at
+ * @property string $updated_at
  * @property int $created_by
  * @property int $updated_by
- * @property string $updated_at
  * @property string $deadline
  * @property int $paid_flag
  *
@@ -46,9 +46,9 @@ class Bill extends \yii\db\ActiveRecord
         return [
             [['user_id', 'image_file'], 'required'],
             [['user_id', 'bill_info_id', 'verified_by_user', 'verified_by_admin', 'created_by', 'updated_by', 'paid_flag'], 'integer'],
-            [['previous_reading', 'current_reading', 'total_amount'], 'number'],
+            [['previous_reading', 'total_amount'], 'number'],
             [['created_at', 'updated_at', 'deadline'], 'safe'],
-            [['image_file', 'bill_file_path'], 'string', 'max' => 255],
+            [['current_reading', 'image_file', 'bill_file_path'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['bill_info_id'], 'exist', 'skipOnError' => true, 'targetClass' => BillInfo::className(), 'targetAttribute' => ['bill_info_id' => 'id']],
         ];
@@ -71,9 +71,9 @@ class Bill extends \yii\db\ActiveRecord
             'verified_by_user' => Yii::t('app', 'Verified By User'),
             'verified_by_admin' => Yii::t('app', 'Verified By Admin'),
             'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),
-            'updated_at' => Yii::t('app', 'Updated At'),
             'deadline' => Yii::t('app', 'Deadline'),
             'paid_flag' => Yii::t('app', 'Paid Flag'),
         ];

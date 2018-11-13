@@ -21,6 +21,14 @@ use yii\widgets\ActiveForm;
                     'placeholder' => Yii::t('app', 'Image File')
                 ])->label(Yii::t('app', 'Image File')); ?>
         </div>
+        <?php if (!$model->isNewRecord): ?>
+            <div class="col-md-4 col-lg-4">
+                <?= Html::img($model->getImagePath(), ['width' => '200px']) ?>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <?= $form->field($model, 'current_reading')->textInput() ?>
+            </div>
+        <?php endif; ?>
     </div>
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
